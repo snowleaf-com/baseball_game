@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# このフックは .git/hooks/pre-commit から実行される
+# frontend/.husky/pre-commit のパスからプロジェクトルートを取得
+HOOK_DIR="$(cd "$(dirname -- "$0")" && pwd)"
+PROJECT_ROOT="$(cd "$HOOK_DIR/../.." && pwd)"
+FRONTEND_DIR="$PROJECT_ROOT/frontend"
+
+cd "$FRONTEND_DIR" || exit 1
+pnpm lint-staged
+pnpm type-check
+
