@@ -3,6 +3,6 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return response()->json(['message' => 'Gekipawa API']);
+    return response()->json(['message' => 'Baseball Game API']);
 });
 

@@ -1,7 +1,7 @@
 {
-    "name": "gekipawa/backend",
+    "name": "baseball-game/backend",
     "type": "project",
-    "description": "Gekipawa Baseball League Game - Laravel Backend",
+    "description": "Baseball Game - Laravel Backend",
     "keywords": ["laravel", "framework", "baseball", "game"],
     "license": "MIT",
     "require": {

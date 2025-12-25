@@ -21,6 +21,7 @@ frontend/package-lock.json
 
 # Docker
 .docker/
+.env
 
 # IDE
 .idea/

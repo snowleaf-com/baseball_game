@@ -5,21 +5,23 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: gekipawa_app
+    container_name: baseball-game_app
     restart: unless-stopped
     working_dir: /var/www
+    env_file:
+      - .env
     volumes:
       - ./backend:/var/www
       - ./backend/vendor:/var/www/vendor
     networks:
-      - gekipawa-network
+      - baseball-game-network
     depends_on:
       - db
       - redis
 
   nginx:
     image: nginx:alpine
-    container_name: gekipawa_nginx
+    container_name: baseball-game_nginx
     restart: unless-stopped
     ports:
       - "8080:80"
@@ -27,40 +29,42 @@ services:
       - ./backend/public:/var/www/public
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     networks:
-      - gekipawa-network
+      - baseball-game-network
     depends_on:
       - app
 
   db:
     image: mysql:8.0
-    container_name: gekipawa_db
+    container_name: baseball-game_db
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      MYSQL_DATABASE: gekipawa
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_PASSWORD: password
-      MYSQL_USER: gekipawa
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
     ports:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
     networks:
-      - gekipawa-network
+      - baseball-game-network
 
   redis:
     image: redis:alpine
-    container_name: gekipawa_redis
+    container_name: baseball-game_redis
     restart: unless-stopped
     ports:
       - "6379:6379"
     networks:
-      - gekipawa-network
+      - baseball-game-network
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: gekipawa_frontend
+    container_name: baseball-game_frontend
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -68,12 +72,14 @@ services:
       - ./frontend:/app
       - /app/node_modules
     networks:
-      - gekipawa-network
+      - baseball-game-network
+    env_file:
+      - .env
     environment:
-      - REACT_APP_API_URL=http://localhost:8080/api
+      - REACT_APP_API_URL=${REACT_APP_API_URL}
 
 networks:
-  gekipawa-network:
+  baseball-game-network:
     driver: bridge
 
 volumes:

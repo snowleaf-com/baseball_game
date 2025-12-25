@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Gekipawa セットアップを開始します..."
+echo "Baseball Game セットアップを開始します..."
 
 # Laravelプロジェクトのセットアップ
 if [ ! -d "backend/vendor" ]; then
