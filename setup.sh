@@ -7,11 +7,31 @@ if [ ! -d "backend/vendor" ]; then
     echo "Laravelプロジェクトをセットアップしています..."
     cd backend
     composer install
-    if [ ! -f ".env" ]; then
-        cp .env.example .env
-        php artisan key:generate
-    fi
     cd ..
+fi
+
+# .envファイルの設定
+if [ ! -f "backend/.env" ]; then
+    echo ".envファイルを作成しています..."
+    if [ -f ".env.docker" ]; then
+        cp .env.docker backend/.env
+        echo ".env.dockerからbackend/.envを作成しました"
+    elif [ -f "env-docker.txt" ]; then
+        cp env-docker.txt backend/.env
+        echo "env-docker.txtからbackend/.envを作成しました"
+    elif [ -f ".env.example" ]; then
+        cp .env.example backend/.env
+        echo ".env.exampleからbackend/.envを作成しました"
+    elif [ -f "backend/.env.example" ]; then
+        cp backend/.env.example backend/.env
+        echo "backend/.env.exampleからbackend/.envを作成しました"
+    fi
+    
+    if [ -f "backend/.env" ]; then
+        cd backend
+        php artisan key:generate
+        cd ..
+    fi
 fi
 
 # Reactプロジェクトのセットアップ

@@ -1,0 +1,71 @@
+# MAMP用環境変数ファイル
+# このファイルを .env.mamp にリネームして使用してください
+# または setup-mamp.sh を実行すると自動的にbackend/.envが作成されます
+
+APP_NAME="Baseball Game"
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost:8888
+
+LOG_CHANNEL=stack
+LOG_STACK=single
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=debug
+
+# データベース設定（MAMP用）
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=8889
+DB_DATABASE=baseball_game
+DB_USERNAME=root
+DB_PASSWORD=root
+
+# Redis設定（MAMP用 - オプション）
+# Redisを使わない場合は、CACHE_DRIVERとSESSION_DRIVERをfileに変更してください
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+
+# キャッシュ・セッション設定
+# Redisを使わない場合はfileに変更
+CACHE_DRIVER=file
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+QUEUE_CONNECTION=sync
+
+# メール設定（開発環境用）
+MAIL_MAILER=smtp
+MAIL_HOST=127.0.0.1
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS="noreply@baseball-game.local"
+MAIL_FROM_NAME="${APP_NAME}"
+
+# フロントエンド設定
+REACT_APP_API_URL=http://localhost:8888/api
+
+# AWS設定（使用しない場合は空欄）
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=
+AWS_USE_PATH_STYLE_ENDPOINT=false
+
+# Pusher設定（使用しない場合は空欄）
+PUSHER_APP_ID=
+PUSHER_APP_KEY=
+PUSHER_APP_SECRET=
+PUSHER_HOST=
+PUSHER_PORT=443
+PUSHER_SCHEME=https
+PUSHER_APP_CLUSTER=mt1
+
+VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+VITE_PUSHER_HOST="${PUSHER_HOST}"
+VITE_PUSHER_PORT="${PUSHER_PORT}"
+VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
+VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+
