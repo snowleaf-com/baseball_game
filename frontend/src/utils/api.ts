@@ -1,7 +1,14 @@
 import axios, { AxiosInstance, AxiosError } from 'axios'
-import { AuthResponse, User, Game, Comment, RegisterRequest, LoginRequest, ApiError } from '@/types'
+import {
+  AuthResponse,
+  User,
+  Game,
+  RegisterRequest,
+  LoginRequest,
+  ApiError,
+} from '@/types'
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api/v1'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1'
 
 class ApiClient {
   private client: AxiosInstance
@@ -80,4 +87,3 @@ class ApiClient {
 
 export const apiClient = new ApiClient()
 export default apiClient
-

@@ -1,4 +1,3 @@
-import React from 'react'
 import './Ranking.css'
 
 export default function Ranking() {
@@ -9,4 +8,3 @@ export default function Ranking() {
     </div>
   )
 }
-

@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router'
 import { Game, Comment, LeagueInfo } from '@/types'
 import apiClient from '@/utils/api'
 import './Home.css'
 
 export default function Home() {
-  const [recentGames, setRecentGames] = useState<Game[]>([]);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [leagueInfo, setLeagueInfo] = useState<LeagueInfo | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [recentGames, setRecentGames] = useState<Game[]>([])
+  const [comments] = useState<Comment[]>([])
+  const [leagueInfo] = useState<LeagueInfo | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const games = await apiClient.getGames();
-        setRecentGames(games);
+        const games = await apiClient.getGames()
+        setRecentGames(games)
         // TODO: コメントとリーグ情報を取得
-        setLoading(false);
+        setLoading(false)
       } catch (error) {
-        console.error('Error fetching data:', error);
-        setLoading(false);
+        console.error('Error fetching data:', error)
+        setLoading(false)
       }
     }
 
@@ -34,8 +34,12 @@ export default function Home() {
       </header>
 
       <nav className="home-nav">
-        <Link to="/login" className="btn btn-primary">ログイン</Link>
-        <Link to="/register" className="btn btn-secondary">新規登録</Link>
+        <Link to="/login" className="btn btn-primary">
+          ログイン
+        </Link>
+        <Link to="/register" className="btn btn-secondary">
+          新規登録
+        </Link>
       </nav>
 
       <main className="home-main">
@@ -61,7 +65,8 @@ export default function Home() {
             <ul>
               {recentGames.map((game) => (
                 <li key={game.id}>
-                  {game.home_team?.team_name} {game.home_score} - {game.away_score} {game.away_team?.team_name}
+                  {game.home_team?.team_name} {game.home_score} - {game.away_score}{' '}
+                  {game.away_team?.team_name}
                 </li>
               ))}
             </ul>
@@ -88,4 +93,3 @@ export default function Home() {
     </div>
   )
 }
-

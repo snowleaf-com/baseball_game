@@ -5,9 +5,9 @@ import apiClient from '@/utils/api'
 import './Dashboard.css'
 
 export default function Dashboard() {
-  const navigate = useNavigate();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate()
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const fetchUser = async (): Promise<void> => {
@@ -75,4 +75,3 @@ export default function Dashboard() {
     </div>
   )
 }
-

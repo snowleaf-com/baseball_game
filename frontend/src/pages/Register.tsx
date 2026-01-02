@@ -7,7 +7,7 @@ import './Register.css'
 const POSITIONS = ['捕', '一', '二', '三', '遊', '左', '中', '右']
 
 export default function Register() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const [formData, setFormData] = useState<RegisterRequest>({
     saku: '',
     password: '',
@@ -20,19 +20,27 @@ export default function Register() {
       b_ste: 5,
       b_mnd: 5,
     },
-    players: Array(10).fill(null).map((_, i): PlayerFormData => ({
-      name: '',
-      position: i < 8 ? POSITIONS[i] : undefined,
-      power: 5,
-      meet: 5,
-      run: 5,
-      defense: 5,
-    })),
-  });
-  const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+    players: Array(10)
+      .fill(null)
+      .map(
+        (_, i): PlayerFormData => ({
+          name: '',
+          position: i < 8 ? POSITIONS[i] : undefined,
+          power: 5,
+          meet: 5,
+          run: 5,
+          defense: 5,
+        })
+      ),
+  })
+  const [error, setError] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
 
-  const handlePlayerChange = (index: number, field: keyof PlayerFormData, value: string | number | undefined): void => {
+  const handlePlayerChange = (
+    index: number,
+    field: keyof PlayerFormData,
+    value: string | number | undefined
+  ): void => {
     const newPlayers = [...formData.players]
     newPlayers[index] = { ...newPlayers[index], [field]: value }
     setFormData({ ...formData, players: newPlayers })
@@ -71,7 +79,7 @@ export default function Register() {
       <h1>新規登録</h1>
       <form onSubmit={handleSubmit}>
         {error && <div className="error">{error}</div>}
-        
+
         <div>
           <label>作成者名</label>
           <input
@@ -186,7 +194,9 @@ export default function Register() {
                   disabled={loading}
                 >
                   {POSITIONS.map((pos) => (
-                    <option key={pos} value={pos}>{pos}</option>
+                    <option key={pos} value={pos}>
+                      {pos}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -249,4 +259,3 @@ export default function Register() {
     </div>
   )
 }
-

@@ -5,13 +5,13 @@ import apiClient from '@/utils/api'
 import './Login.css'
 
 export default function Login() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const [formData, setFormData] = useState<LoginRequest>({
     saku: '',
     password: '',
-  });
-  const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  })
+  const [error, setError] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
@@ -66,4 +66,3 @@ export default function Login() {
     </div>
   )
 }
-
