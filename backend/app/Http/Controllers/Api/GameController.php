@@ -32,7 +32,8 @@ class GameController extends Controller
         $request->validate([
             'opponent_team_id' => 'required|exists:users,id',
             'batting_order' => 'required|array|size:10',
-            'boss_type' => 'required|array',
+            // boss_typeはオプショナル（チーム方針、省略時はユーザーの保存値またはデフォルト値を使用）
+            'boss_type' => 'nullable|string|in:offensive,defensive,balanced,running',
         ]);
 
         $user = $request->user();
@@ -53,12 +54,15 @@ class GameController extends Controller
             }
         }
 
-        // 試合実行
+        // チーム方針はユーザーの保存値を使用（試合進行には影響しないが、将来の拡張性のため）
+        $teamStrategy = $request->boss_type ?? $user->boss_type ?? 'balanced';
+
+        // 試合実行（teamStrategyは将来の拡張用、現在は使用しない）
         $result = $this->gameService->simulateGame(
             $user,
             $opponent,
             $request->batting_order,
-            $request->boss_type
+            $teamStrategy
         );
 
         return response()->json($result, 201);

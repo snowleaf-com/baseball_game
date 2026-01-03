@@ -35,6 +35,8 @@ class User extends Authenticatable
         'total_errors',
         'boss_type',
         'camp_count',
+        'budget',
+        'year',
     ];
 
     protected $hidden = [
@@ -42,8 +44,10 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'boss_type' => 'array',
+        // boss_typeは文字列型（'offensive' | 'defensive' | 'balanced' | 'running'）なのでキャスト不要
         'password' => 'hashed',
+        'budget' => 'integer',
+        'year' => 'integer',
     ];
 
     public function players()

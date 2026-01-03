@@ -1,57 +1,27 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { RegisterRequest, PlayerFormData, BossType } from '@/types'
+import { RegisterRequest, TeamStrategy } from '@/types'
 import apiClient from '@/utils/api'
 import './Register.css'
 
-const POSITIONS = ['捕', '一', '二', '三', '遊', '左', '中', '右']
+const TEAM_STRATEGIES: { value: TeamStrategy; label: string; description: string }[] = [
+  { value: 'offensive', label: 'オフェンス重視', description: '打撃力を重視した戦略' },
+  { value: 'defensive', label: '守備重視', description: '守備力を重視した戦略' },
+  { value: 'balanced', label: 'バランス型', description: '攻守のバランスを重視（推奨）' },
+  { value: 'running', label: '走塁重視', description: '走力・盗塁を重視した戦略' },
+]
 
 export default function Register() {
   const navigate = useNavigate()
-  const [formData, setFormData] = useState<RegisterRequest>({
+  const [formData, setFormData] = useState<Omit<RegisterRequest, 'players' | 'home_url'>>({
     saku: '',
     password: '',
     team_name: '',
-    home_url: '',
     icon: '',
-    boss_type: {
-      b_act: 5,
-      b_bnt: 5,
-      b_ste: 5,
-      b_mnd: 5,
-    },
-    players: Array(10)
-      .fill(null)
-      .map(
-        (_, i): PlayerFormData => ({
-          name: '',
-          position: i < 8 ? POSITIONS[i] : undefined,
-          power: 5,
-          meet: 5,
-          run: 5,
-          defense: 5,
-        })
-      ),
+    boss_type: 'balanced', // デフォルトはバランス型
   })
   const [error, setError] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
-
-  const handlePlayerChange = (
-    index: number,
-    field: keyof PlayerFormData,
-    value: string | number | undefined
-  ): void => {
-    const newPlayers = [...formData.players]
-    newPlayers[index] = { ...newPlayers[index], [field]: value }
-    setFormData({ ...formData, players: newPlayers })
-  }
-
-  const handleBossTypeChange = (field: keyof BossType, value: number): void => {
-    setFormData({
-      ...formData,
-      boss_type: { ...formData.boss_type, [field]: value },
-    })
-  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
@@ -59,7 +29,12 @@ export default function Register() {
     setLoading(true)
 
     try {
-      const response = await apiClient.register(formData)
+      // playersパラメータは省略（バックエンドで自動生成）
+      const registerData: RegisterRequest = {
+        ...formData,
+        // playersは省略（バックエンドで自動生成）
+      }
+      const response = await apiClient.register(registerData)
       localStorage.setItem('token', response.token)
       localStorage.setItem('user', JSON.stringify(response.user))
       navigate('/dashboard')
@@ -114,143 +89,32 @@ export default function Register() {
         </div>
 
         <div>
-          <label>ホームページURL</label>
-          <input
-            type="url"
-            value={formData.home_url}
-            onChange={(e) => setFormData({ ...formData, home_url: e.target.value })}
-            disabled={loading}
-          />
-        </div>
-
-        <h2>ボスタイプ</h2>
-        <div className="boss-type">
-          <div>
-            <label>打撃I</label>
-            <input
-              type="number"
-              min="1"
-              max="10"
-              value={formData.boss_type.b_act}
-              onChange={(e) => handleBossTypeChange('b_act', parseInt(e.target.value))}
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <label>バントI</label>
-            <input
-              type="number"
-              min="1"
-              max="10"
-              value={formData.boss_type.b_bnt}
-              onChange={(e) => handleBossTypeChange('b_bnt', parseInt(e.target.value))}
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <label>走塁I</label>
-            <input
-              type="number"
-              min="1"
-              max="10"
-              value={formData.boss_type.b_ste}
-              onChange={(e) => handleBossTypeChange('b_ste', parseInt(e.target.value))}
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <label>守備I</label>
-            <input
-              type="number"
-              min="1"
-              max="10"
-              value={formData.boss_type.b_mnd}
-              onChange={(e) => handleBossTypeChange('b_mnd', parseInt(e.target.value))}
-              disabled={loading}
-            />
-          </div>
-        </div>
-
-        <h2>選手登録</h2>
-        {formData.players.map((player, index) => (
-          <div key={index} className="player-form">
-            <h3>選手 {index + 1}</h3>
-            <div>
-              <label>名前</label>
-              <input
-                type="text"
-                value={player.name}
-                onChange={(e) => handlePlayerChange(index, 'name', e.target.value)}
-                required
-                disabled={loading}
-              />
-            </div>
-            {index < 8 && (
-              <div>
-                <label>守備位置</label>
-                <select
-                  value={player.position || ''}
-                  onChange={(e) => handlePlayerChange(index, 'position', e.target.value)}
+          <label>チーム方針</label>
+          <div className="strategy-options">
+            {TEAM_STRATEGIES.map((strategy) => (
+              <label key={strategy.value} className="strategy-option">
+                <input
+                  type="radio"
+                  name="boss_type"
+                  value={strategy.value}
+                  checked={formData.boss_type === strategy.value}
+                  onChange={(e) =>
+                    setFormData({ ...formData, boss_type: e.target.value as TeamStrategy })
+                  }
                   disabled={loading}
-                >
-                  {POSITIONS.map((pos) => (
-                    <option key={pos} value={pos}>
-                      {pos}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-            <div>
-              <label>パワー</label>
-              <input
-                type="number"
-                min="1"
-                max="10"
-                value={player.power}
-                onChange={(e) => handlePlayerChange(index, 'power', parseInt(e.target.value))}
-                required
-                disabled={loading}
-              />
-            </div>
-            <div>
-              <label>ミート</label>
-              <input
-                type="number"
-                min="1"
-                max="10"
-                value={player.meet}
-                onChange={(e) => handlePlayerChange(index, 'meet', parseInt(e.target.value))}
-                required
-                disabled={loading}
-              />
-            </div>
-            <div>
-              <label>走力</label>
-              <input
-                type="number"
-                min="1"
-                max="10"
-                value={player.run}
-                onChange={(e) => handlePlayerChange(index, 'run', parseInt(e.target.value))}
-                required
-                disabled={loading}
-              />
-            </div>
-            <div>
-              <label>守備</label>
-              <input
-                type="number"
-                min="1"
-                max="10"
-                value={player.defense}
-                onChange={(e) => handlePlayerChange(index, 'defense', parseInt(e.target.value))}
-                required
-                disabled={loading}
-              />
-            </div>
+                />
+                <div className="strategy-content">
+                  <strong>{strategy.label}</strong>
+                  <span className="strategy-description">{strategy.description}</span>
+                </div>
+              </label>
+            ))}
           </div>
-        ))}
+        </div>
+
+        <div className="info-box">
+          <p>※ 選手は自動生成されます。登録後、ダッシュボードで確認できます。</p>
+        </div>
 
         <button type="submit" disabled={loading}>
           {loading ? '登録中...' : '登録'}

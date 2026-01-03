@@ -1,37 +1,37 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
+import useSWR from 'swr'
 import { User } from '@/types'
 import apiClient from '@/utils/api'
+import { fetcher } from '@/utils/fetcher'
 import './Dashboard.css'
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  
+  const { data: user, isLoading, error } = useSWR<User>(
+    token ? '/me' : null, // トークンがない場合はフェッチしない
+    fetcher
+  )
 
   useEffect(() => {
-    const fetchUser = async (): Promise<void> => {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        navigate('/login')
-        return
-      }
+    // トークンがない場合はログイン画面へ
+    if (!token) {
+      navigate('/login')
+      return
+    }
 
-      try {
-        const userData = await apiClient.getMe()
-        setUser(userData)
-      } catch (error) {
-        console.error('Error fetching user:', error)
+    // エラーが発生した場合（401など）はログイン画面へ
+    if (error) {
+      const axiosError = error as any
+      if (axiosError?.response?.status === 401) {
         localStorage.removeItem('token')
         localStorage.removeItem('user')
         navigate('/login')
-      } finally {
-        setLoading(false)
       }
     }
-
-    fetchUser()
-  }, [navigate])
+  }, [token, error, navigate])
 
   const handleLogout = async (): Promise<void> => {
     try {
@@ -45,11 +45,11 @@ export default function Dashboard() {
     }
   }
 
-  if (loading) {
+  if (isLoading) {
     return <div>読み込み中...</div>
   }
 
-  if (!user) {
+  if (error || !user) {
     return <div>ユーザー情報の取得に失敗しました</div>
   }
 

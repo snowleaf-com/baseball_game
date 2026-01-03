@@ -3,14 +3,16 @@
 namespace App\Services;
 
 use App\Models\Game;
+use App\Models\LeagueSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class GameSimulationService
 {
-    public function simulateGame(User $homeTeam, User $awayTeam, array $homeBattingOrder, array $bossType)
+    public function simulateGame(User $homeTeam, User $awayTeam, array $homeBattingOrder, string $teamStrategy)
     {
-        return DB::transaction(function () use ($homeTeam, $awayTeam, $homeBattingOrder, $bossType) {
+        return DB::transaction(function () use ($homeTeam, $awayTeam, $homeBattingOrder, $teamStrategy) {
+            // $teamStrategyは将来の拡張用（現在は使用しない）
             // 試合シミュレーションロジック（既存のPerlコードを移植）
             $homeScore = 0;
             $awayScore = 0;
@@ -31,6 +33,9 @@ class GameSimulationService
                 ];
             }
 
+            // リーグ設定を取得
+            $leagueSetting = LeagueSetting::getInstance();
+
             // 試合結果を保存
             $game = Game::create([
                 'home_team_id' => $homeTeam->id,
@@ -39,8 +44,8 @@ class GameSimulationService
                 'away_score' => $awayScore,
                 'game_log' => $gameLog,
                 'played_at' => now(),
-                'league_day' => 1, // TODO: リーグ日数を取得
-                'league_number' => 1, // TODO: リーグ回数を取得
+                'league_day' => $leagueSetting->league_day,
+                'league_number' => $leagueSetting->league_number,
             ]);
 
             // チーム成績を更新

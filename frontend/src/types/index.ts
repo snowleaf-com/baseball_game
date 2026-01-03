@@ -15,7 +15,7 @@ export interface User {
   total_home_runs: number
   total_stolen_bases: number
   total_errors: number
-  boss_type: BossType
+  boss_type: TeamStrategy // チーム方針: 'offensive' | 'defensive' | 'balanced' | 'running'
   camp_count: number
   players?: Player[]
   created_at?: string
@@ -57,6 +57,10 @@ export interface Player {
   home_runs_allowed?: number
 }
 
+// チーム方針（簡略化版）
+export type TeamStrategy = 'offensive' | 'defensive' | 'balanced' | 'running'
+
+// 後方互換性のため、BossTypeは残す（非推奨）
 export interface BossType {
   b_act: number
   b_bnt: number
@@ -117,8 +121,8 @@ export interface RegisterRequest {
   team_name: string
   home_url?: string
   icon?: string
-  boss_type: BossType
-  players: PlayerFormData[]
+  boss_type?: TeamStrategy // オプショナル：省略時は'balanced'を使用
+  players?: PlayerFormData[] // オプショナル：省略時は自動生成
 }
 
 export interface PlayerFormData {

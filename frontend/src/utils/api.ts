@@ -78,7 +78,7 @@ class ApiClient {
   async playGame(data: {
     opponent_team_id: number
     batting_order: number[]
-    boss_type: { b_act: number; b_bnt: number; b_ste: number; b_mnd: number }
+    boss_type?: string // オプショナル：チーム方針（'offensive' | 'defensive' | 'balanced' | 'running'）
   }): Promise<Game> {
     const response = await this.client.post<Game>('/games/play', data)
     return response.data

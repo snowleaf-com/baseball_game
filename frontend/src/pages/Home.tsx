@@ -1,30 +1,14 @@
-import { useState, useEffect } from 'react'
 import { Link } from 'react-router'
+import useSWR from 'swr'
 import { Game, Comment, LeagueInfo } from '@/types'
-import apiClient from '@/utils/api'
+import { fetcher } from '@/utils/fetcher'
 import './Home.css'
 
 export default function Home() {
-  const [recentGames, setRecentGames] = useState<Game[]>([])
-  const [comments] = useState<Comment[]>([])
-  const [leagueInfo] = useState<LeagueInfo | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const games = await apiClient.getGames()
-        setRecentGames(games)
-        // TODO: コメントとリーグ情報を取得
-        setLoading(false)
-      } catch (error) {
-        console.error('Error fetching data:', error)
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-  }, [])
+  const { data: recentGames, isLoading, error } = useSWR<Game[]>('/games', fetcher)
+  // TODO: コメントとリーグ情報を取得
+  const comments: Comment[] = []
+  const leagueInfo: LeagueInfo | null = null as LeagueInfo | null
 
   return (
     <div className="home">
@@ -45,9 +29,7 @@ export default function Home() {
       <main className="home-main">
         <section className="league-info">
           <h2>リーグ情報</h2>
-          {loading ? (
-            <p>リーグ情報を読み込み中...</p>
-          ) : leagueInfo ? (
+          {leagueInfo ? (
             <div>
               <p>第{leagueInfo.league_number}回リーグ</p>
               <p>リーグ{leagueInfo.league_day}日目</p>
@@ -59,9 +41,11 @@ export default function Home() {
 
         <section className="recent-games">
           <h2>最近の試合</h2>
-          {loading ? (
+          {isLoading ? (
             <p>読み込み中...</p>
-          ) : recentGames.length > 0 ? (
+          ) : error ? (
+            <p>エラーが発生しました</p>
+          ) : recentGames && recentGames.length > 0 ? (
             <ul>
               {recentGames.map((game) => (
                 <li key={game.id}>

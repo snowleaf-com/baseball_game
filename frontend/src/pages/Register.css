@@ -116,3 +116,78 @@
   border: 1px solid #f5c6cb;
 }
 
+.info-box {
+  padding: 1rem;
+  background: #e7f3ff;
+  color: #004085;
+  border-radius: 4px;
+  margin: 1.5rem 0;
+  border: 1px solid #b3d9ff;
+}
+
+.info-box p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.strategy-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.strategy-option {
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+}
+
+.strategy-option:hover {
+  border-color: #007bff;
+  background: #f8f9fa;
+}
+
+.strategy-option input[type='radio'] {
+  margin-right: 0.75rem;
+  margin-top: 0.25rem;
+  cursor: pointer;
+}
+
+.strategy-option input[type='radio']:checked + .strategy-content {
+  color: #007bff;
+}
+
+.strategy-option:has(input[type='radio']:checked) {
+  border-color: #007bff;
+  background: #e7f3ff;
+}
+
+.strategy-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.strategy-content strong {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+  color: #333;
+}
+
+.strategy-option:has(input[type='radio']:checked) .strategy-content strong {
+  color: #007bff;
+}
+
+.strategy-description {
+  font-size: 0.875rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+
